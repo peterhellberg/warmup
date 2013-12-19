@@ -46,6 +46,8 @@ func main() {
 			log.Print(r)
 		}
 	}
+
+	log.Print(gray("DONE."))
 }
 
 func fatal(err string) {
@@ -63,14 +65,14 @@ func get(url string, ch *chan string) {
 
 	if err != nil {
 		*ch <- red("ERR ") + err.Error()
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 400 {
-		*ch <- green(resp.Status) + " " + url
 	} else {
-		*ch <- red(resp.Status) + " " + blue(url)
+		defer resp.Body.Close()
+
+		if resp.StatusCode < 400 {
+			*ch <- green(resp.Status) + " " + url
+		} else {
+			*ch <- red(resp.Status) + " " + blue(url)
+		}
 	}
 }
 
