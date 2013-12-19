@@ -13,15 +13,17 @@ Go 1.1+ is required since `bufio.NewScanner` is used.
 go get -u github.com/peterhellberg/warmup
 ```
 
-### Usage
+### Usage of warmup
 
 ```
+  -base-url="http://0.0.0.0:7000": The base URL used for paths
   -color=true: If you want the output in color
+  -delay=100: Delay (in ms) between requests
   -filename="urls.txt": List of URLs
   -limit=100: Limit of concurrent requests
 ```
 
-You probably want to warm the hottest routes on your site.
+You probably want to warm the (soon to be) hottest routes on your site.
 
 ### License
 
