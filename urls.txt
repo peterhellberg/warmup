@@ -1,0 +1,7 @@
+http://c7.se
+http://c7.se/from-ruby-to-lua/
+http://example.org/
+http://example.com/error
+Not an URL
+https://humans.herokuapp.com/
+https://github.com/peterhellberg/warmup/
