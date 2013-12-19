@@ -1,10 +1,10 @@
 http://c7.se
 http://c7.se/from-ruby-to-lua/
 http://example.org/
-http://example.com/error
 Not an URL
 https://humans.herokuapp.com/
 https://github.com/peterhellberg/warmup/
-http://0.0.0.0:9912/no_server/
 # Comment with url http://foo.bar/
+http://example.com/error
+http://0.0.0.0:9912/no_server/
 /path/to/something
