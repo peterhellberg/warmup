@@ -9,12 +9,15 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var (
 	filename  = flag.String("filename", "urls.txt", "List of URLs")
 	showColor = flag.Bool("color", true, "If you want the output in color")
 	limit     = flag.Int("limit", 100, "Limit of concurrent requests")
+	delay     = flag.Int("delay", 100, "Delay (in ms) between requests")
+	baseURL   = flag.String("base-url", "http://0.0.0.0:7000", "The base URL used for paths")
 )
 
 func main() {
@@ -36,8 +39,8 @@ func main() {
 
 	ch := make(chan string, *limit)
 
-	for _, url := range urls {
-		go get(url, &ch)
+	for i, url := range urls {
+		go get(url, i, &ch)
 	}
 
 	for i := 0; i < numURLs; i++ {
@@ -58,7 +61,11 @@ func fatalMessage(err string) string {
 	return red("ERROR:") + " " + err
 }
 
-func get(url string, ch *chan string) {
+func get(url string, i int, ch *chan string) {
+	if *delay > 0 {
+		time.Sleep(time.Duration(*delay*i) * time.Millisecond)
+	}
+
 	log.Print(gray("REQ " + url))
 
 	resp, err := http.Get(url)
@@ -89,6 +96,10 @@ func readURLs(urls *string) ([]string, error) {
 	for scanner.Scan() {
 		if strings.HasPrefix(scanner.Text(), "http") {
 			lines = append(lines, scanner.Text())
+		}
+
+		if *baseURL != "" && strings.HasPrefix(scanner.Text(), "/") {
+			lines = append(lines, *baseURL+scanner.Text())
 		}
 	}
 

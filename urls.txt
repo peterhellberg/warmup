@@ -7,3 +7,4 @@ https://humans.herokuapp.com/
 https://github.com/peterhellberg/warmup/
 http://0.0.0.0:9912/no_server/
 # Comment with url http://foo.bar/
+/path/to/something
