@@ -87,7 +87,7 @@ func readURLs(urls *string) ([]string, error) {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		if strings.Contains(scanner.Text(), "http") {
+		if strings.HasPrefix(scanner.Text(), "http") {
 			lines = append(lines, scanner.Text())
 		}
 	}
