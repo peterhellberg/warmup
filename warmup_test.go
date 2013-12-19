@@ -31,6 +31,7 @@ func TestWarmup(t *testing.T) {
 				"http://example.com/error",
 				"https://humans.herokuapp.com/",
 				"https://github.com/peterhellberg/warmup/",
+				"http://0.0.0.0:9912/no_server/",
 			}
 
 			So(urls, ShouldResemble, expected)

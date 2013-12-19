@@ -5,3 +5,4 @@ http://example.com/error
 Not an URL
 https://humans.herokuapp.com/
 https://github.com/peterhellberg/warmup/
+http://0.0.0.0:9912/no_server/
