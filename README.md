@@ -3,12 +3,14 @@ Warmup
 
 HTTP cache warming.
 
+Go 1.1+ is required since `bufio.NewScanner` is used.
+
 ![Example output](http://assets.c7.se/skitch/warmup-20131219-032813.png)
 
 ### Installation
 
 ```bash
-go get github.com/peterhellberg/warmup
+go get -u github.com/peterhellberg/warmup
 ```
 
 ### Usage
