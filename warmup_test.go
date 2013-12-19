@@ -9,14 +9,15 @@ func TestWarmup(t *testing.T) {
 	Convey("Default flags", t, func() {
 		So(*filename, ShouldEqual, "urls.txt")
 		So(*showColor, ShouldBeTrue)
+		So(*fatalErrors, ShouldBeFalse)
 		So(*limit, ShouldEqual, 100)
 		So(*delay, ShouldEqual, 100)
 		So(*baseURL, ShouldEqual, "http://0.0.0.0:7000")
 	})
 
 	Convey("fatalMessage()", t, func() {
-		Convey("returns a string prepended with (red) ERROR:", func() {
-			So(fatalMessage("foo"), ShouldEqual, "\033[0;31mERROR:\033[0m foo")
+		Convey("returns a string prepended with (red) ERR", func() {
+			So(fatalMessage("foo"), ShouldEqual, "\033[0;31mERR\033[0m foo")
 		})
 	})
 
@@ -30,9 +31,9 @@ func TestWarmup(t *testing.T) {
 				"http://c7.se",
 				"http://c7.se/from-ruby-to-lua/",
 				"http://example.org/",
-				"http://example.com/error",
 				"https://humans.herokuapp.com/",
 				"https://github.com/peterhellberg/warmup/",
+				"http://example.com/error",
 				"http://0.0.0.0:9912/no_server/",
 				"http://0.0.0.0:7000/path/to/something",
 			}

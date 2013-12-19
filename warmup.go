@@ -13,11 +13,12 @@ import (
 )
 
 var (
-	filename  = flag.String("filename", "urls.txt", "List of URLs")
-	showColor = flag.Bool("color", true, "If you want the output in color")
-	limit     = flag.Int("limit", 100, "Limit of concurrent requests")
-	delay     = flag.Int("delay", 100, "Delay (in ms) between requests")
-	baseURL   = flag.String("base-url", "http://0.0.0.0:7000", "The base URL used for paths")
+	filename    = flag.String("filename", "urls.txt", "List of URLs")
+	showColor   = flag.Bool("color", true, "If you want the output in color")
+	fatalErrors = flag.Bool("fatal-errors", false, "Useful for automated testing")
+	limit       = flag.Int("limit", 100, "Limit of concurrent requests")
+	delay       = flag.Int("delay", 100, "Delay (in ms) between requests")
+	baseURL     = flag.String("base-url", "http://0.0.0.0:7000", "The base URL used for paths")
 )
 
 func main() {
@@ -58,7 +59,7 @@ func fatal(err string) {
 }
 
 func fatalMessage(err string) string {
-	return red("ERROR:") + " " + err
+	return red("ERR") + " " + err
 }
 
 func get(url string, i int, ch *chan string) {
@@ -71,14 +72,22 @@ func get(url string, i int, ch *chan string) {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		*ch <- red("ERR ") + err.Error()
+		if *fatalErrors {
+			fatal(err.Error())
+		} else {
+			*ch <- red("ERR ") + err.Error()
+		}
 	} else {
 		defer resp.Body.Close()
 
 		if resp.StatusCode < 400 {
 			*ch <- green(resp.Status) + " " + url
 		} else {
-			*ch <- red(resp.Status) + " " + blue(url)
+			if *fatalErrors {
+				fatal(resp.Status + " " + blue(url))
+			} else {
+				*ch <- red(resp.Status) + " " + blue(url)
+			}
 		}
 	}
 }
