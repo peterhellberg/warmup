@@ -19,6 +19,7 @@ go get -u github.com/peterhellberg/warmup
   -base-url="http://0.0.0.0:7000": The base URL used for paths
   -color=true: If you want the output in color
   -delay=100: Delay (in ms) between requests
+  -fatal-errors=false: Useful for automated testing
   -filename="urls.txt": List of URLs
   -limit=100: Limit of concurrent requests
 ```
