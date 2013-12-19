@@ -10,6 +10,8 @@ func TestWarmup(t *testing.T) {
 		So(*filename, ShouldEqual, "urls.txt")
 		So(*showColor, ShouldBeTrue)
 		So(*limit, ShouldEqual, 100)
+		So(*delay, ShouldEqual, 100)
+		So(*baseURL, ShouldEqual, "http://0.0.0.0:7000")
 	})
 
 	Convey("fatalMessage()", t, func() {
@@ -32,6 +34,7 @@ func TestWarmup(t *testing.T) {
 				"https://humans.herokuapp.com/",
 				"https://github.com/peterhellberg/warmup/",
 				"http://0.0.0.0:9912/no_server/",
+				"http://0.0.0.0:7000/path/to/something",
 			}
 
 			So(urls, ShouldResemble, expected)
