@@ -10,3 +10,11 @@ HTTP cache warming.
 ```bash
 go get github.com/peterhellberg/warmup
 ```
+
+### Usage
+
+```
+  -color=true: If you want the output in color
+  -filename="urls.txt": List of URLs
+  -limit=100: Limit of concurrent requests
+```
