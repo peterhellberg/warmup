@@ -1,6 +1,8 @@
 Warmup
 ======
 
+[![GoDoc](https://godoc.org/github.com/peterhellberg/warmup?status.png)](https://godoc.org/github.com/peterhellberg/warmup)
+
 HTTP cache warming.
 
 Go 1.1+ is required since `bufio.NewScanner` is used.
