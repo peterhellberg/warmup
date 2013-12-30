@@ -144,9 +144,9 @@ func readURLs(urls *string) ([]string, error) {
 func color(c, s string) string {
 	if *showColor {
 		return "\033[" + c + "m" + s + "\033[0m"
-	} else {
-		return s
 	}
+
+	return s
 }
 
 func red(s string) string {
