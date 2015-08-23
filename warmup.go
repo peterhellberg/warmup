@@ -32,7 +32,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -48,19 +47,20 @@ var (
 )
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	flag.Parse()
 
 	urls, err := readURLs(filename)
-
 	if err != nil {
 		fatal(err.Error())
 	}
 
+	run(log.New(os.Stdout, "", 0), urls)
+}
+
+func run(logger *log.Logger, urls []string) {
 	numURLs := len(urls)
 
-	log.Print("Launching " +
+	logger.Println("Launching " +
 		green(strconv.Itoa(numURLs)) +
 		green(" GET") + " requests.")
 
@@ -73,19 +73,15 @@ func main() {
 	for i := 0; i < numURLs; i++ {
 		select {
 		case r := <-ch:
-			log.Print(r)
+			logger.Println(r)
 		}
 	}
 
-	log.Print(gray("DONE."))
+	logger.Println(gray("DONE."))
 }
 
 func fatal(err string) {
 	log.Fatalln(fatalMessage(err))
-}
-
-func fatalMessage(err string) string {
-	return red("ERR") + " " + err
 }
 
 func get(url string, i int, ch *chan string) {
@@ -139,6 +135,10 @@ func readURLs(urls *string) ([]string, error) {
 	}
 
 	return lines, scanner.Err()
+}
+
+func fatalMessage(err string) string {
+	return red("ERR") + " " + err
 }
 
 func color(c, s string) string {
