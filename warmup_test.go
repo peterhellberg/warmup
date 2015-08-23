@@ -1,74 +1,138 @@
 package main
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
+	"reflect"
 	"testing"
 )
 
-func TestWarmup(t *testing.T) {
-	Convey("Default flags", t, func() {
-		So(*filename, ShouldEqual, "urls.txt")
-		So(*showColor, ShouldBeTrue)
-		So(*fatalErrors, ShouldBeFalse)
-		So(*limit, ShouldEqual, 100)
-		So(*delay, ShouldEqual, 100)
-		So(*baseURL, ShouldEqual, "http://0.0.0.0:7000")
-	})
+func TestDefaultFlags(t *testing.T) {
+	if got, want := *filename, "urls.txt"; got != want {
+		t.Errorf(`*filename = %q, want %q`, got, want)
+	}
 
-	Convey("fatalMessage()", t, func() {
-		Convey("returns a string prepended with (red) ERR", func() {
-			So(fatalMessage("foo"), ShouldEqual, "\033[0;31mERR\033[0m foo")
-		})
-	})
+	if got, want := *showColor, true; got != want {
+		t.Errorf(`*showColor = %v, want %v`, got, want)
+	}
 
-	Convey("readURLs()", t, func() {
-		Convey("it reads the example urls.txt", func() {
-			file := "urls.txt"
+	if got, want := *fatalErrors, false; got != want {
+		t.Errorf(`*fatalErrors = %v, want %v`, got, want)
+	}
 
-			urls, _ := readURLs(&file)
+	if got, want := *limit, 100; got != want {
+		t.Errorf(`*limit = %d, want %d`, got, want)
+	}
 
-			expected := []string{
-				"http://c7.se",
-				"http://c7.se/from-ruby-to-lua/",
-				"http://example.org/",
-				"https://humans.herokuapp.com/",
-				"https://github.com/peterhellberg/warmup/",
-				"http://example.com/error",
-				"http://0.0.0.0:9912/no_server/",
-				"http://0.0.0.0:7000/path/to/something",
-			}
+	if got, want := *delay, 100; got != want {
+		t.Errorf(`*delay = %d, want %d`, got, want)
+	}
 
-			So(urls, ShouldResemble, expected)
-		})
-	})
+	if got, want := *baseURL, "http://0.0.0.0:7000"; got != want {
+		t.Errorf(`*baseURL = %q, want %q`, got, want)
+	}
+}
 
-	Convey("color()", t, func() {
-		Convey("makes text colorful", func() {
-			*showColor = true
-			So(color("1;36", "foo"), ShouldEqual, "\033[1;36mfoo\033[0m")
-		})
+func TestFatalMessage(t *testing.T) {
+	tests := []struct {
+		in   string
+		want string
+	}{
+		{"red", "\x1b[0;31mERR\x1b[0m red"},
+	}
 
-		Convey("that is unless color has been disabled", func() {
-			*showColor = false
-			So(color("1;36", "foo"), ShouldEqual, "foo")
-		})
+	for _, test := range tests {
+		if got := fatalMessage(test.in); got != test.want {
+			t.Fatalf(`fatalMessage(%q) = %q, want %q`, test.in, got, test.want)
+		}
+	}
+}
 
-		*showColor = true
+func TestReadURLs(t *testing.T) {
+	file := "urls.txt"
 
-		Convey("red()   turns text… red", func() {
-			So(red("foo"), ShouldEqual, "\033[0;31mfoo\033[0m")
-		})
+	urls, _ := readURLs(&file)
 
-		Convey("green() turns text… green", func() {
-			So(green("bar"), ShouldEqual, "\033[0;32mbar\033[0m")
-		})
+	expected := []string{
+		"http://c7.se",
+		"http://c7.se/from-ruby-to-lua/",
+		"http://example.org/",
+		"https://humans.herokuapp.com/",
+		"https://github.com/peterhellberg/warmup/",
+		"http://example.com/error",
+		"http://0.0.0.0:9912/no_server/",
+		"http://0.0.0.0:7000/path/to/something",
+	}
 
-		Convey("blue()  turns text… blue", func() {
-			So(blue("baz"), ShouldEqual, "\033[0;34mbaz\033[0m")
-		})
+	if !reflect.DeepEqual(urls, expected) {
+		t.Fatalf(`unexpected slice of URLs`)
+	}
+}
 
-		Convey("gray()  turns text… gray", func() {
-			So(gray("baz"), ShouldEqual, "\033[1;30mbaz\033[0m")
-		})
-	})
+func TestColor(t *testing.T) {
+	*showColor = false
+
+	if got, want := color("1;36", "foo"), "foo"; got != want {
+		t.Fatalf(`color("1;36", "foo") = %q, want %q`, got, want)
+	}
+
+	*showColor = true
+
+	if got, want := color("1;36", "foo"), "\033[1;36mfoo\033[0m"; got != want {
+		t.Fatalf(`color("1;36", "foo") = %q, want %q`, got, want)
+	}
+}
+
+func TestRed(t *testing.T) {
+	*showColor = false
+
+	if got, want := red("foo"), "foo"; got != want {
+		t.Fatalf(`red("foo") = %q, want %q`, got, want)
+	}
+
+	*showColor = true
+
+	if got, want := red("foo"), "\033[0;31mfoo\033[0m"; got != want {
+		t.Fatalf(`red("foo") = %q, want %q`, got, want)
+	}
+}
+
+func TestGreen(t *testing.T) {
+	*showColor = false
+
+	if got, want := green("bar"), "bar"; got != want {
+		t.Fatalf(`green("bar") = %q, want %q`, got, want)
+	}
+
+	*showColor = true
+
+	if got, want := green("bar"), "\033[0;32mbar\033[0m"; got != want {
+		t.Fatalf(`green("bar") = %q, want %q`, got, want)
+	}
+}
+
+func TestBlue(t *testing.T) {
+	*showColor = false
+
+	if got, want := blue("baz"), "baz"; got != want {
+		t.Fatalf(`blue("baz") = %q, want %q`, got, want)
+	}
+
+	*showColor = true
+
+	if got, want := blue("baz"), "\033[0;34mbaz\033[0m"; got != want {
+		t.Fatalf(`blue("baz") = %q, want %q`, got, want)
+	}
+}
+
+func TestGray(t *testing.T) {
+	*showColor = false
+
+	if got, want := gray("qux"), "qux"; got != want {
+		t.Fatalf(`gray("qux") = %q, want %q`, got, want)
+	}
+
+	*showColor = true
+
+	if got, want := gray("qux"), "\033[1;30mqux\033[0m"; got != want {
+		t.Fatalf(`gray("qux") = %q, want %q`, got, want)
+	}
 }
