@@ -51,7 +51,7 @@ func main() {
 
 	urls, err := readURLs(filename)
 	if err != nil {
-		fatal(err.Error())
+		log.Fatalln(errMessage(err.Error()))
 	}
 
 	run(log.New(os.Stdout, "", 0), urls)
@@ -80,10 +80,6 @@ func run(logger *log.Logger, urls []string) {
 	logger.Println(gray("DONE."))
 }
 
-func fatal(err string) {
-	log.Fatalln(fatalMessage(err))
-}
-
 func get(url string, i int, ch *chan string) {
 	if *delay > 0 {
 		time.Sleep(time.Duration(*delay*i) * time.Millisecond)
@@ -95,7 +91,7 @@ func get(url string, i int, ch *chan string) {
 
 	if err != nil {
 		if *fatalErrors {
-			fatal(err.Error())
+			log.Fatalln(errMessage(err.Error()))
 		} else {
 			*ch <- red("ERR ") + err.Error()
 		}
@@ -106,7 +102,7 @@ func get(url string, i int, ch *chan string) {
 			*ch <- green(resp.Status) + " " + url
 		} else {
 			if *fatalErrors {
-				fatal(resp.Status + " " + blue(url))
+				log.Fatalln(errMessage(resp.Status + " " + blue(url)))
 			} else {
 				*ch <- red(resp.Status) + " " + blue(url)
 			}
@@ -137,7 +133,7 @@ func readURLs(urls *string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func fatalMessage(err string) string {
+func errMessage(err string) string {
 	return red("ERR") + " " + err
 }
 

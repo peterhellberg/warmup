@@ -31,17 +31,18 @@ func TestDefaultFlags(t *testing.T) {
 	}
 }
 
-func TestFatalMessage(t *testing.T) {
+func TestErrMessage(t *testing.T) {
 	tests := []struct {
 		in   string
 		want string
 	}{
-		{"red", "\x1b[0;31mERR\x1b[0m red"},
+		{"foo", "\x1b[0;31mERR\x1b[0m foo"},
+		{"bar", "\x1b[0;31mERR\x1b[0m bar"},
 	}
 
 	for _, test := range tests {
-		if got := fatalMessage(test.in); got != test.want {
-			t.Fatalf(`fatalMessage(%q) = %q, want %q`, test.in, got, test.want)
+		if got := errMessage(test.in); got != test.want {
+			t.Fatalf(`errMessage(%q) = %q, want %q`, test.in, got, test.want)
 		}
 	}
 }
